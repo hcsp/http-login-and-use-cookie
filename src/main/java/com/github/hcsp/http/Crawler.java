@@ -3,7 +3,6 @@ package com.github.hcsp.http;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -31,13 +30,14 @@ public class Crawler {
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36\\n\"");
 
         Map<String, String> map = new HashMap<>();
-        map.put(username, password);
-        map.put(username, password);
+        map.put("username", username);
+        map.put("password", password);
         String text = JSON.toJSONString(map);
         StringEntity entity = new StringEntity(text);
         httpPost.setEntity(entity);
 
         CloseableHttpResponse responsePost = httpclient.execute(httpPost);
+        System.out.println(responsePost.getStatusLine());
 
         String cookie = responsePost.getFirstHeader("Set-Cookie").getValue();
         System.out.println(cookie);
@@ -46,11 +46,13 @@ public class Crawler {
         HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
         httpGet.addHeader("Cookie", cookie);
         CloseableHttpResponse responseGet = httpclient.execute(httpGet);
+        System.out.println(responseGet.getStatusLine());
 
         HttpEntity httpEntity = responseGet.getEntity();
         InputStream is = httpEntity.getContent();
         String html = (IOUtils.toString(is, "UTF-8"));
         responseGet.close();
+        System.out.println(html);
         return html;
     }
 }
