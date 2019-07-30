@@ -2,7 +2,9 @@ package com.github.hcsp.http;
 
 
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -11,6 +13,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,22 +37,20 @@ public class Crawler {
         StringEntity entity = new StringEntity(text);
         httpPost.setEntity(entity);
 
-
         CloseableHttpResponse responsePost = httpclient.execute(httpPost);
+
+        String cookie = responsePost.getFirstHeader("Set-Cookie").getValue();
+        System.out.println(cookie);
         responsePost.close();
 
-        Header[] headers = responsePost.getAllHeaders();
-        for (Header header: headers) {
-            System.out.println("Key [ " + header.getName() + "], Value[ " + header.getValue() + " ]");
-        }
-
         HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
-
-//        httpGet.addHeader("Cookie", cookie);
-
+        httpGet.addHeader("Cookie", cookie);
         CloseableHttpResponse responseGet = httpclient.execute(httpGet);
-        responseGet.close();
 
-        return String.valueOf(responseGet);
+        HttpEntity httpEntity = responseGet.getEntity();
+        InputStream is = httpEntity.getContent();
+        String html = (IOUtils.toString(is, "UTF-8"));
+        responseGet.close();
+        return html;
     }
 }
