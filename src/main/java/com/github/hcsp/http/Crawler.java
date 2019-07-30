@@ -2,6 +2,7 @@ package com.github.hcsp.http;
 
 
 import com.alibaba.fastjson.JSON;
+import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -33,16 +34,22 @@ public class Crawler {
         StringEntity entity = new StringEntity(text);
         httpPost.setEntity(entity);
 
+
         CloseableHttpResponse responsePost = httpclient.execute(httpPost);
         responsePost.close();
 
+        Header[] headers = responsePost.getAllHeaders();
+        for (Header header: headers) {
+            System.out.println("Key [ " + header.getName() + "], Value[ " + header.getValue() + " ]");
+        }
+
         HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
-        httpGet.addHeader("Cookie", "JSESSIONID=26357FA9869B0AB4E3851237E0EE576A; Path=/; HttpOnly");
+
+//        httpGet.addHeader("Cookie", cookie);
 
         CloseableHttpResponse responseGet = httpclient.execute(httpGet);
         responseGet.close();
 
-        System.out.println(responseGet);
         return String.valueOf(responseGet);
     }
 }
