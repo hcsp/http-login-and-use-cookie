@@ -26,7 +26,7 @@ public class Crawler {
         HttpPost httpPost = new HttpPost("http://47.91.156.35:8000/auth/login");
         httpPost.addHeader("content-type", "application/json;charset=UTF-8");
         httpPost.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
-        httpPost.setEntity(getPostEntity());
+        httpPost.setEntity(getPostEntity(username, password));
         try (CloseableHttpResponse httpResponse = httpClient.execute(httpPost)) {
             Header[] reposeHeader = httpResponse.getAllHeaders();
             Map<String, String> mapKeyValue = new HashMap<>();
@@ -46,7 +46,7 @@ public class Crawler {
         httpPost.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
         httpPost.addHeader("cookie", cookie);
 
-        httpPost.setEntity(getPostEntity());
+        httpPost.setEntity(getPostEntity("xdml", "xdml"));
         try (CloseableHttpResponse httpResponse = httpClient.execute(httpPost)) {
             InputStream inputStream = httpResponse.getEntity().getContent();
             String content = IOUtils.toString(inputStream, "UTF-8");
@@ -55,12 +55,11 @@ public class Crawler {
         }
     }
 
-    private static StringEntity getPostEntity() {
+    private static StringEntity getPostEntity(String username, String password) {
         Map<String, String> postBody = new HashMap<>();
-        postBody.put("username", "xdml");
-        postBody.put("password", "xdml");
+        postBody.put("username", username);
+        postBody.put("password", password);
         String jsonObject = JSON.toJSONString(postBody);
-        StringEntity stringEntity = new StringEntity(jsonObject, "UTF-8");
-        return stringEntity;
+        return new StringEntity(jsonObject, "UTF-8");
     }
 }
