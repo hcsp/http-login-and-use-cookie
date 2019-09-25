@@ -10,16 +10,29 @@ import java.util.List;
 public class Crawler {
     public static final String CHROME_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36";
 
-    public static String visitWithCookie(List cookies, HashMap headers) {
+    public static HashMap getRequestHeaders() {
+
+        HashMap<String, Object> headers = new HashMap<>();
+
+        headers.put("User-Agent", CHROME_USER_AGENT);
+        headers.put("Content-Type", "application/json");
+
+        return headers;
+    }
+
+    public static String visitWithCookie(List cookies) {
         String authUrl = "http://47.91.156.35:8000/auth";
 
         HashMap<String, Object> requestCookies = new HashMap<>();
 
         Cookie cookie = (Cookie) cookies.get(0);
-
         requestCookies.put("JSESSIONID", cookie.getValue());
 
-        String ret = Requests.get(authUrl).headers(headers).cookies(requestCookies).send().readToText();
+        String ret = Requests.get(authUrl)
+                .headers(getRequestHeaders())
+                .cookies(requestCookies)
+                .send()
+                .readToText();
 
         return ret;
     }
@@ -32,14 +45,12 @@ public class Crawler {
         params.put("password", password);
 
 
-        HashMap<String, Object> headers = new HashMap<>();
+        RawResponse response = Requests.post(loginUrl)
+                .headers(getRequestHeaders())
+                .jsonBody(params)
+                .send();
 
-        headers.put("User-Agent", CHROME_USER_AGENT);
-        headers.put("Content-Type", "application/json");
-
-        RawResponse response = Requests.post(loginUrl).headers(headers).jsonBody(params).send();
-
-        return visitWithCookie(response.cookies(), headers);
+        return visitWithCookie(response.cookies());
 
     }
 
