@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Crawler {
-
-
     public static String loginAndGetResponse(String username, String password) throws IOException {
 
         String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
@@ -44,19 +42,14 @@ public class Crawler {
         String html = IOUtils.toString(httpEntityContent, "UTF-8");
         response2.close();
         return html;
+
     }
 
     public static void main(String[] args) {
         try {
             loginAndGetResponse("xdml", "xdml");
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
-
-
-//Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36
-//Content-Type: application/json
-//26D4758FACF9EA2837BDAE6240F8666
