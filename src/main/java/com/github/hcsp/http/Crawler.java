@@ -34,8 +34,6 @@ public class Crawler {
         response1.close();
 
         HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
-        httpGet.addHeader("Content-Type", "application/json");
-        httpGet.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36");
         httpGet.addHeader("Cookie", cookie);
 
         CloseableHttpResponse response2 = httpclient.execute(httpGet);
