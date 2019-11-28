@@ -10,6 +10,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -20,13 +21,14 @@ public class Crawler {
     private static CloseableHttpClient httpClient = HttpClients.createDefault();
     private static CloseableHttpResponse response = null;
 
-    public static String userToJsonString(String username,String password){
+    public static String userToJsonString(String username, String password) {
         Map<String, String> map = new HashMap();
         map.put("username", username);
         map.put("password", password);
         return JSON.toJSONString(map);
     }
-    public static void postResponse(String url,String json){
+
+    public static void postResponse(String url, String json) {
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "application/json");
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36");
@@ -46,7 +48,7 @@ public class Crawler {
         }
     }
 
-    public static void getResponse(String url){
+    public static void getResponse(String url) {
         HttpGet httpGet = new HttpGet(url);
         httpGet.addHeader("Cookie", getCookie());
 
@@ -57,7 +59,7 @@ public class Crawler {
         }
     }
 
-    public static String getCookie(){
+    public static String getCookie() {
         Header[] httpHeaders = response.getAllHeaders();
         String cookie = null;
         for (Header i : httpHeaders) {
@@ -70,7 +72,7 @@ public class Crawler {
         return cookie;
     }
 
-    public static String getResultString(){
+    public static String getResultString() {
         String result = null;
         HttpEntity entity = response.getEntity();
         try {
@@ -89,7 +91,7 @@ public class Crawler {
         String json = userToJsonString(username, password);
 
         // POST
-        postResponse(url1,json);
+        postResponse(url1, json);
 
         // GET
         getResponse(url2);
