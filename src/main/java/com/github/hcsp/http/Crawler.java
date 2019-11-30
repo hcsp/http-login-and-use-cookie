@@ -1,7 +1,6 @@
 package com.github.hcsp.http;
 
 import com.alibaba.fastjson.JSON;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -10,7 +9,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -20,6 +18,8 @@ public class Crawler {
     private static StringEntity stringEntity;
     private static CloseableHttpClient httpClient = HttpClients.createDefault();
     private static CloseableHttpResponse response = null;
+    private static String loginUrl = null;
+    private static String authUrl = null;
 
     public static String userToJsonString(String username, String password) {
         Map<String, String> map = new HashMap();
@@ -60,41 +60,30 @@ public class Crawler {
     }
 
     public static String getCookie() {
-        Header[] httpHeaders = response.getAllHeaders();
         String cookie = null;
-        for (Header i : httpHeaders) {
-            if ("Set-Cookie".equals(i.getName())) {
-                cookie = i.getValue();
-                break;
-            }
-        }
-        cookie = cookie.split(";")[0];
+        cookie = response.getFirstHeader("Set-Cookie").getValue().split(";")[0];
         return cookie;
     }
 
-    public static String getResultString() {
+    public static String getResultString() throws IOException {
         String result = null;
         HttpEntity entity = response.getEntity();
-        try {
-            result = EntityUtils.toString(entity);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        result = EntityUtils.toString(entity);
         return result;
     }
 
-    public static String loginAndGetResponse(String username, String password) {
-        String url1 = "http://47.91.156.35:8000/auth/login";
-        String url2 = "http://47.91.156.35:8000/auth";
+    public static String loginAndGetResponse(String username, String password) throws IOException {
+        loginUrl = "http://47.91.156.35:8000/auth/login";
+        authUrl = "http://47.91.156.35:8000/auth";
 
         // USER_TO_JSON
         String json = userToJsonString(username, password);
 
         // POST
-        postResponse(url1, json);
+        postResponse(loginUrl, json);
 
         // GET
-        getResponse(url2);
+        getResponse(authUrl);
 
         return getResultString();
     }
