@@ -67,8 +67,4 @@ public class Crawler {
         return cookie;
     }
 
-    public static void main(String[] args) throws IOException {
-        loginAndGetResponse("xdml", "xdml");
-
-    }
 }
