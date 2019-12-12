@@ -1,7 +1,6 @@
 package com.github.hcsp.http;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -9,11 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Crawler {
+
+    private static final String loginUrl = "http://47.91.156.35:8000/auth/login";
+
+    private static final String authUrl = "http://47.91.156.35:8000/auth";
+
+
     public static String loginAndGetResponse(String username, String password) throws IOException {
-
-        String loginUrl = "http://47.91.156.35:8000/auth/login";
-
-        String authUrl = "http://47.91.156.35:8000/auth";
 
         String cookie = login(loginUrl, username, password);
 
