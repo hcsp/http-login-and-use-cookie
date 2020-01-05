@@ -22,9 +22,9 @@ public class Crawler {
         HttpPost httpPost = new HttpPost("http://47.91.156.35:8000/auth/login");
         httpPost.addHeader("Content-Type", "application/json");
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36");
-        Map<String,String> map = new HashMap<>();
-        map.put("username",username);
-        map.put("password",password);
+        Map<String, String> map = new HashMap<>();
+        map.put("username", username);
+        map.put("password", password);
         httpPost.setEntity(new StringEntity(JSON.toJSONString(map)));
         CloseableHttpResponse response1 = httpclient.execute(httpPost);
         String cookie = response1.getFirstHeader("Set-Cookie").getValue();
