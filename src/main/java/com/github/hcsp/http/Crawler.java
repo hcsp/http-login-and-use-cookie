@@ -21,7 +21,7 @@ public class Crawler {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://47.91.156.35:8000/auth/login");
         httpPost.addHeader("Content-Type", "application/json");
-        httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36");
+        httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36");
         Map<String,String> map = new HashMap<>();
         map.put("username",username);
         map.put("password",password);
@@ -33,7 +33,7 @@ public class Crawler {
 
         HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
         httpGet.addHeader("Content-Type", "application/json");
-        httpGet.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36");
+        httpGet.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36");
         httpGet.addHeader("Cookie", cookie);
 
         CloseableHttpResponse response2 = httpclient.execute(httpGet);
