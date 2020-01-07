@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 public class Crawler {
@@ -18,8 +17,8 @@ public class Crawler {
         String header = "";
         String result = "";
         Map<String, String> login = new HashMap<>();
-        login.put("username", "xdml");
-        login.put("password", "xdml");
+        login.put("username", username);
+        login.put("password", password);
         String logInfo = JSONObject.toJSONString(login);
         OkHttpClient okHttpClient = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(logInfo, JSON);
