@@ -40,7 +40,7 @@ public class Crawler {
             HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
             //设置cookie信息
             httpGet.setHeader("Cookie", cookie.toString().substring(0, cookie.indexOf(";")));
-            try (CloseableHttpResponse response1 = httpclient.execute(httpGet);) {
+            try (CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
                 HttpEntity entity2 = response1.getEntity();
                 body = IOUtils.toString(entity2.getContent(), StandardCharsets.UTF_8);
             } catch (Exception e) {
