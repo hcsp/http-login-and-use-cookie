@@ -24,11 +24,11 @@ public class Crawler {
         Map<String, Object> usermap = new HashMap<>();
         usermap.put("username", username);
         usermap.put("password", password);
-        String cookie = getResponseCookie(usermap);
-        return withCookieRequsetBody(cookie);
+        String cookie = getHttpPostResponseCookie(usermap);
+        return getWithCookieResponseBody(cookie);
     }
 
-    private static String withCookieRequsetBody(String cookie) throws IOException {
+    private static String getWithCookieResponseBody(String cookie) throws IOException {
         CloseableHttpClient httpclient2 = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
         addhttpGetHeader(cookie, httpGet);
@@ -45,7 +45,7 @@ public class Crawler {
         return havecookieJson;
     }
 
-    private static String getResponseCookie(Map<String, Object> usermap) throws IOException {
+    private static String getHttpPostResponseCookie(Map<String, Object> usermap) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://47.91.156.35:8000/auth/login");
         addhttpPostHeaderAndEntity(usermap, httpPost);
@@ -53,7 +53,11 @@ public class Crawler {
         System.out.println("firstRequest:" + response1.getStatusLine());
         StringBuilder cookie;
         try {
-            cookie = getCookie(response1);
+            Header[] headers = response1.getHeaders("Set-Cookie");
+            cookie = new StringBuilder();
+            for (Header h : headers) {
+                cookie.append(h.getValue());
+            }
             System.out.println("cookie:" + cookie);
         } finally {
             response1.close();
@@ -65,15 +69,6 @@ public class Crawler {
         httpGet.addHeader("Cookie", cookie);
         httpGet.addHeader("Content-Type", "application/json");
         httpGet.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36");
-    }
-
-    private static StringBuilder getCookie(CloseableHttpResponse response1) {
-        Header[] headers = response1.getHeaders("Set-Cookie");
-        StringBuilder cookie = new StringBuilder();
-        for (Header h : headers) {
-            cookie.append(h.getValue());
-        }
-        return cookie;
     }
 
     private static void addhttpPostHeaderAndEntity(Map<String, Object> userMap, HttpPost httpPost) throws UnsupportedEncodingException {
