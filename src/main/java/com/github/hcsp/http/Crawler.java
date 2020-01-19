@@ -25,7 +25,6 @@ public class Crawler {
     public static String loginAndGetResponse(String username, String password) throws IOException {
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        String body = null;
         //设置登录名字和密码
         Map<String, Object> map = new HashMap<>();
         map.put("username", username);
