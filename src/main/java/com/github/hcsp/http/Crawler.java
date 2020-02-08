@@ -44,7 +44,7 @@ public class Crawler {
         httpGet.addHeader("Cookie", cookie);
         httpGet.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.94 Safari/537.36");
 
-        CloseableHttpResponse response2 = httpclient.execute(httpPost);
+        CloseableHttpResponse response2 = httpclient.execute(httpGet);
         try {
             HttpEntity entity2 = response2.getEntity();
             String headerBody = EntityUtils.toString(entity2);
