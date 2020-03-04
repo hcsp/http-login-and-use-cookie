@@ -41,7 +41,7 @@ public class Crawler {
 
         InputStream inputStream = response1.getEntity().getContent();
 
-        String responseString = "";
+        StringBuilder responseString = new StringBuilder();
         try (
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -50,11 +50,11 @@ public class Crawler {
         ) {
             String buff = "";
             while ((buff = bf.readLine()) != null) {
-                responseString += buff;
+                responseString.append(buff);
             }
         }
 
-        return responseString;
+        return responseString.toString();
 
 
     }
