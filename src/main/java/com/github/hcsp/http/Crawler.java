@@ -24,11 +24,11 @@ public class Crawler {
     private static String value;
     private static String result;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         loginAndGetResponse("xdml", "xdml");
     }
 
-    public static String loginAndGetResponse(String username, String password) {
+    public static String loginAndGetResponse(String username, String password) throws IOException {
         CookieStore cookieStore = new BasicCookieStore();
         HttpClient httpClient = HttpClients.createDefault();
         HttpClientContext context = HttpClientContext.create();
@@ -42,33 +42,30 @@ public class Crawler {
         String params = JSON.toJSONString(map);
         System.out.println(params);
         httpPost.setEntity(new StringEntity(params, ContentType.APPLICATION_JSON));
-        try {
-            HttpResponse httpResponse = httpClient.execute(httpPost, context);
-            if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                List<Cookie> cookies = cookieStore.getCookies();
-                for (Cookie cookie : cookies) {
+        HttpResponse httpResponse = null;
+        httpResponse = httpClient.execute(httpPost, context);
+        if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            List<Cookie> cookies = cookieStore.getCookies();
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("JSESSIONID")) {
                     name = cookie.getName();
                     value = cookie.getValue();
+                    break;
                 }
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
-            httpGet.addHeader("content-type", "application/json");
-            httpGet.addHeader("cookie", name + "=" + value);
-            httpGet.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36");
-            try {
-                HttpResponse httpResponse = httpClient.execute(httpGet);
-                String json = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-                result = json;
-                System.out.println(json);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            requestWithCookie(httpClient);
         }
         return result;
+    }
 
+    private static void requestWithCookie(HttpClient httpClient) throws IOException {
+        HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
+        httpGet.addHeader("content-type", "application/json");
+        httpGet.addHeader("cookie", name + "=" + value);
+        httpGet.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36");
+        HttpResponse httpResponse = httpClient.execute(httpGet);
+        String json = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+        result = json;
+        System.out.println(json);
     }
 }
