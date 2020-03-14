@@ -44,7 +44,6 @@ public class Crawler {
         RequestBody requestBody = RequestBody.create(jsonObject.toJSONString(), mediaType);
         Request request = new Request.Builder().url(url + "login").header("User-Agent", agent).post(requestBody).build();
         Response response = okHttpClient.newCall(request).execute();
-        System.out.println(IOUtils.toString(response.body().byteStream(), "UTF-8"));
         response.close();
     }
 
@@ -54,9 +53,5 @@ public class Crawler {
         String msg = IOUtils.toString(response.body().byteStream(), "UTF-8");
         response.close();
         return msg;
-    }
-
-    public static void main(String[] args) throws IOException {
-        Crawler.loginAndGetResponse("xdml", "xdml");
     }
 }
