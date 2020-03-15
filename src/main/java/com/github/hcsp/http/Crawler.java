@@ -40,7 +40,5 @@ public class Crawler {
 
     }
 
-    public static void main(String[] args) throws Exception {
-        System.out.println(loginAndGetResponse("xdml", "xdml"));
-    }
+
 }
