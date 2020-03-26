@@ -38,7 +38,7 @@ public class Crawler {
             String value = header.getValue();
             if (null != value) {
                 String cookie = value.split(";")[0];
-                HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth发送");
+                HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
                 httpGet.setHeader("Cookie", cookie);
                 CloseableHttpResponse resp = httpClient.execute(httpPost);
                 String text = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
