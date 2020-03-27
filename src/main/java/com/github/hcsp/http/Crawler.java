@@ -1,56 +1,55 @@
 package com.github.hcsp.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Crawler {
     private static final String LOGIN_URL = "http://47.91.156" + ".35:8000/auth/login";
-    private static final String REDIRECT_URL = "http://47.91.156.35:8000/auth";
+    private static final String AUTH_URL = "http://47.91.156.35:8000/auth";
+    private static final String USER_AGENT = "Mozilla/5.0 Firefox/26.0";
 
     public static String loginAndGetResponse(String username, String password) throws IOException {
 
-        CloseableHttpClient client = createCloseableClient();
+        CookieStore basicCookieStore = new BasicCookieStore();
+
+        CloseableHttpClient client = createCloseableClient(basicCookieStore);
 
         CloseableHttpResponse loginResponse = loginWith(client, username, password);
 
         if (isLoginSuccess(loginResponse)) {
-            return redirectTo(REDIRECT_URL, client, loginResponse);
+            return getAuthStatus(AUTH_URL, client, basicCookieStore);
         }
 
         return "Status: " + loginResponse.getStatusLine().getStatusCode() + "; Login failed, please try again";
     }
 
-    /**
-     * simulate a browser using HttpClient api
-     *
-     * @return CloseableHttpClient
-     */
-    private static CloseableHttpClient createCloseableClient() {
+    public static void main(String[] args) throws IOException {
+        System.out.println(loginAndGetResponse("xdml", "xdml"));
+    }
+
+    private static CloseableHttpClient createCloseableClient(CookieStore cookieStore) {
         return HttpClients.custom()
-                    .setUserAgent("Mozilla/5.0 Firefox/26.0")
+                    .setUserAgent(USER_AGENT)
+                    .setDefaultCookieStore(cookieStore)
                     .build();
     }
 
-    /**
-     * try login with credentials
-     *
-     * @param client
-     * @param username      given username
-     * @param password      given password
-     * @return              response to login request
-     * @throws IOException
-     */
     private static CloseableHttpResponse loginWith(
             final CloseableHttpClient client,
             final String username,
@@ -72,53 +71,28 @@ public class Crawler {
         }
     }
 
-    /**
-     * Returns true, if login is successful
-     * Returns false, should login fail
-     *
-     * @param response  response from login request
-     * @return          true if login success
-     *                  false otherwise
-     */
     private static boolean isLoginSuccess(final CloseableHttpResponse response) {
         return response.getStatusLine().getStatusCode() == 200;
     }
 
-    /**
-     * Redirect when login success
-     *
-     * @param urlToRedirect     redirection URL
-     * @param client            CloseableHttpClient
-     * @param response          server response to login request
-     * @return                  Response body of redirection request
-     * @throws IOException
-     */
-    private static String redirectTo(final String urlToRedirect,
-                                     final CloseableHttpClient client,
-                                     final CloseableHttpResponse response) throws IOException {
-        String cookie = extractCookie(response);
-        HttpGet httpGet = new HttpGet(urlToRedirect);
+    private static String getAuthStatus(final String url,
+                                        final CloseableHttpClient client,
+                                        final CookieStore cookieStore) throws IOException {
+        String cookie = extractCookie(cookieStore);
+        HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("Cookie", cookie);
-        try (CloseableHttpResponse redirectResponse = client.execute(httpGet)) {
-            System.out.println("redirectResponse: " + redirectResponse.getStatusLine().getStatusCode());
-            String redirectResponseBody = EntityUtils.toString(redirectResponse.getEntity(), StandardCharsets.UTF_8);
-            return redirectResponseBody;
+        try (CloseableHttpResponse secondRequest = client.execute(httpGet)) {
+            return EntityUtils.toString(secondRequest.getEntity(), StandardCharsets.UTF_8);
         }
     }
 
-    /**
-     * Extract cookie from login response for redirection request
-     *
-     * @param response  server response to login request
-     * @return          cookie String from server response to login request
-     */
-    private static String extractCookie(final CloseableHttpResponse response) {
-        String cookie;
+    private static String extractCookie(final CookieStore cookieStore) {
+        final List<Cookie> cookies = cookieStore.getCookies();
+        final Cookie cookie = cookies.stream()
+                .filter(c -> "JSESSIONID".equals(c.getName()))
+                .findFirst()
+                .get();
 
-        final String firstHeader = response.getFirstHeader("Set-Cookie").getValue();
-        final String[] strArray = firstHeader.split(";");
-        cookie = strArray[0];
-
-        return cookie;
+        return String.join("=", Arrays.asList(cookie.getName(), cookie.getValue()));
     }
 }
