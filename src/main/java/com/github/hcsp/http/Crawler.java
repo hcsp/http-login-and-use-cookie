@@ -60,8 +60,8 @@ public class Crawler {
             get.setHeader("content-type", "application/json");
             get.setHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36");
             get.setHeader("cookie", cookie);
-            CloseableHttpResponse response = httpClient.execute(get);
-            String body1 = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+            loginResponse = httpClient.execute(get);
+            String body1 = IOUtils.toString(loginResponse.getEntity().getContent(), "UTF-8");
 
             return body1;
 
