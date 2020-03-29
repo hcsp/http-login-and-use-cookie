@@ -34,7 +34,7 @@ public class Crawler {
         CloseableHttpResponse loginResponse = httpClient.execute(post);
         try {
             int statusCode = loginResponse.getStatusLine().getStatusCode();
-            if (HttpStatus.SC_OK != statusCode) {
+            if (statusCode < 200 || statusCode >= 300) {
                 throw new HttpResponseException(statusCode, loginResponse.getStatusLine().toString() + "获取数据失败！请重试");
             }
             InputStream is = loginResponse.getEntity().getContent();
