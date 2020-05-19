@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -30,9 +29,9 @@ public class Crawler {
 
 
         //JSON.toJSONString是将对象转化为Json字符串//body
-        Map<String,String> map = new HashMap<>();
-        map.put("username",username);
-        map.put("password",password);
+        Map<String, String> map = new HashMap<>();
+        map.put("username", username);
+        map.put("password", password);
         String json = JSON.toJSONString(map);
 
         //HttpEntity其实相当于一个消息实体，内容是http传送的报文
@@ -43,47 +42,49 @@ public class Crawler {
         String JSESSIONID = null;
         //得到post请求的响应
         CloseableHttpResponse response = httpclient.execute(httpPost);
-        try{
+        try {
             System.out.println(response.getStatusLine());
             HttpEntity responseEntity = response.getEntity();
             String responseStr = IOUtils.toString(responseEntity.getContent());
             System.out.println(responseStr);
 
             Header[] headers = response.getAllHeaders();
-            for (Header header: headers) {
+            for (Header header : headers) {
                 System.out.println(header.toString());
             }
             Header setCookieHeader = response.getFirstHeader("Set-Cookie");
             JSESSIONID = setCookieHeader.getValue().split("; ")[0];
 
-        }finally {
+        } finally {
             response.close();
         }
         //返回使用COOKIE发送请求的响应
         return getResponseWithJSESSIONID(JSESSIONID);
     }
+
     //使用cookie发送请求
-    private static String getResponseWithJSESSIONID(String JSESSIONID) throws IOException{
+    private static String getResponseWithJSESSIONID(String JSESSIONID) throws IOException {
         CloseableHttpClient httpClient2 = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
-        httpGet.addHeader("Cookie",JSESSIONID);
+        httpGet.addHeader("Cookie", JSESSIONID);
 
         CloseableHttpResponse response2 = httpClient2.execute(httpGet);
-        try{
+        try {
             System.out.println(response2.getStatusLine());
             HttpEntity entity1 = response2.getEntity();
 
             String responseStr2 = IOUtils.toString(entity1.getContent(), "UTF-8");
             System.out.println(responseStr2);
             return responseStr2;
-        }finally {
+        } finally {
             response2.close();
         }
     }
 
-    public static void main(String[] args)throws IOException {
-        loginAndGetResponse("xdml","xdml");
+    public static void main(String[] args) throws IOException {
+        loginAndGetResponse("xdml", "xdml");
     }
 }
+
 
 
