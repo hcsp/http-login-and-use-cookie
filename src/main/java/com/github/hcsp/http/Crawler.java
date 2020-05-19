@@ -23,22 +23,18 @@ public class Crawler {
         String loginUrl = "http://47.91.156.35:8000/auth/login";
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(loginUrl);
-
         httpPost.addHeader("Content-Type", "application/json");
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-
-
         //JSON.toJSONString是将对象转化为Json字符串//body
         Map<String, String> map = new HashMap<>();
         map.put("username", username);
         map.put("password", password);
         String json = JSON.toJSONString(map);
-
         //HttpEntity其实相当于一个消息实体，内容是http传送的报文
         HttpEntity entity = new StringEntity(json);
         //使用HttpPost方法提交HTTP POST请求，则需要使用HttpPost类的setEntity方法设置请求参数
-        httpPost.setEntity(entity);//这里就是将用户名以及密码设为请求参数
-
+        //这里就是将用户名以及密码设为请求参数
+        httpPost.setEntity(entity);
         String JSESSIONID = null;
         //得到post请求的响应
         CloseableHttpResponse response = httpclient.execute(httpPost);
