@@ -21,7 +21,7 @@ import java.util.Map;
 public class Crawler {
 
     public static String loginAndGetResponse(String username, String password) throws IOException {
-        String JSESSIONID = null;
+        String JSESSIONID;
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         HttpPost httpPost = new HttpPost("http://47.91.156.35:8000/auth/login");
