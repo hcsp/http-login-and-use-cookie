@@ -40,7 +40,7 @@ public class Crawler {
 
         //创建post实体
         httpPost.setEntity(new StringEntity(json));
-        CloseableHttpResponse response =  httpClient.execute(httpPost);
+        CloseableHttpResponse response = httpClient.execute(httpPost);
         System.out.println(response.getStatusLine());
         HttpEntity entity = response.getEntity();
         EntityUtils.consume(entity);
@@ -48,20 +48,22 @@ public class Crawler {
         //获取JESSIONID的值
         String cookie = response.getLastHeader("Set-cookie").getValue();
         response.close();
-        return cookie.replaceAll(";.*"," ");
+        return cookie.replaceAll(";.*", " ");
     }
 
     //发送一个GET请求，传入url和cookie,返回一个json
     public static String sendHttpGet(String url, String cookie) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(url);
-        httpGet.addHeader("Content-Type","application/json");
-        httpGet.addHeader("Cookie",cookie);
+        httpGet.addHeader("Content-Type", "application/json");
+        httpGet.addHeader("Cookie", cookie);
+        httpGet.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36");
+
 
         CloseableHttpResponse response = httpClient.execute(httpGet);
         System.out.println(response.getStatusLine());
         HttpEntity entity = response.getEntity();
-        String result = EntityUtils.toString(entity,"UTF-8");
+        String result = EntityUtils.toString(entity, "UTF-8");
         return result;
     }
 
