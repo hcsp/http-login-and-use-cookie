@@ -1,7 +1,6 @@
 package com.github.hcsp.http;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
