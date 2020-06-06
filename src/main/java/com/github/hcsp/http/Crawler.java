@@ -12,6 +12,8 @@ import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Crawler {
     private static final String LOGIN = "http://47.91.156.35:8000/auth/login";
@@ -22,16 +24,19 @@ public class Crawler {
         HttpPost httpPost = new HttpPost(LOGIN);
         httpPost.addHeader("Content-Type", "application/json");
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0");
-        UserLogInInfo userLogInInfo = new UserLogInInfo(username, password);
         Gson gson = new Gson();
-        String json = gson.toJson(userLogInInfo, UserLogInInfo.class);
+
+        Map<String, String> userInfo = new HashMap<>();
+        userInfo.put("username", username);
+        userInfo.put("password", password);
+        String json = gson.toJson(userInfo);
         httpPost.setEntity(new StringEntity(json));
         HttpResponse loginResponse = closeableHttpClient.execute(httpPost);
         Header setCookie = loginResponse.getFirstHeader("Set-Cookie");
-        String JSessionId = getJSessionId(setCookie);
+        String jSessionId = getJSessionId(setCookie);
 
         HttpGet httpGet = new HttpGet(AUTH);
-        httpGet.setHeader("JSESSIONID", JSessionId);
+        httpGet.setHeader("JSESSIONID", jSessionId);
         HttpResponse authResponse = closeableHttpClient.execute(httpGet);
         String result = IOUtils.toString(authResponse.getEntity().getContent(), StandardCharsets.UTF_8);
         closeableHttpClient.close();
@@ -48,31 +53,5 @@ public class Crawler {
             }
         }
         return JSessionId;
-    }
-}
-
-class UserLogInInfo {
-    private String username;
-    private String password;
-
-    public UserLogInInfo(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }
