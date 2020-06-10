@@ -16,13 +16,13 @@ import java.util.Scanner;
 
 public class Crawler {
     private static final String LOGIN = "http://47.91.156.35:8000/auth/login";
-    private static final String auth = "http://47.91.156.35:8000/auth";
+    private static final String AUTH = "http://47.91.156.35:8000/auth";
 
     public static String loginAndGetResponse(String username, String password) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        String JSESSIONID = getCookie(username, password);
-        HttpGet httpGet = new HttpGet(auth);
-        httpGet.addHeader("Cookie", JSESSIONID);
+        String jsessionid = getCookie(username, password);
+        HttpGet httpGet = new HttpGet(AUTH);
+        httpGet.addHeader("Cookie", jsessionid);
         CloseableHttpResponse httpResponse1 = httpClient.execute(httpGet);
         String resource = new Scanner(httpResponse1.getEntity().getContent()).useDelimiter("\\Z").next();
         httpClient.close();
@@ -30,10 +30,10 @@ public class Crawler {
 
     }
 
-    public static String GetJSESSIONID(Header header) {
-        String[] JSESSIONID1 = header.getValue().split(";");
-        String JSESSIONID = JSESSIONID1[0];
-        return JSESSIONID;
+    public static String getJsessionid(Header header) {
+        String[] jsessionids = header.getValue().split(";");
+        String jsessionid = jsessionids[0];
+        return jsessionid;
     }
 
     public static Map<String, String> JsonMap(String username, String password) {
@@ -51,7 +51,7 @@ public class Crawler {
         String json = JSONObject.toJSONString(JsonMap(username, password));
         httpPost.setEntity(new StringEntity(json));
         CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
-        String JSESSIONID = GetJSESSIONID(httpResponse.getFirstHeader("Set-Cookie"));
-        return JSESSIONID;
+        String jsessionid = getJsessionid(httpResponse.getFirstHeader("Set-Cookie"));
+        return jsessionid;
     }
 }
