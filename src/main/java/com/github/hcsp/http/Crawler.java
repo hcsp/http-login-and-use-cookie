@@ -36,7 +36,7 @@ public class Crawler {
         return jsessionid;
     }
 
-    public static Map<String, String> JsonMap(String username, String password) {
+    public static Map<String, String> jsonMap(String username, String password) {
         Map<String, String> map = new HashMap<>();
         map.put("username", username);
         map.put("password", password);
@@ -48,7 +48,7 @@ public class Crawler {
         HttpPost httpPost = new HttpPost(LOGIN);
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Mobile Safari/537.36");
         httpPost.addHeader("Content-Type", "application/json");
-        String json = JSONObject.toJSONString(JsonMap(username, password));
+        String json = JSONObject.toJSONString(jsonMap(username, password));
         httpPost.setEntity(new StringEntity(json));
         CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
         String jsessionid = getJsessionid(httpResponse.getFirstHeader("Set-Cookie"));
