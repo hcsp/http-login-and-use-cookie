@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Crawler {
-    private final static String LOGIN_URL = "http://47.91.156.35:8000/auth/login";
-    private final static String AUTH_URL = "http://47.91.156.35:8000/auth";
+    private static final String LOGIN_URL = "http://47.91.156.35:8000/auth/login";
+    private static final String AUTH_URL = "http://47.91.156.35:8000/auth";
 
     public static String loginAndGetResponse(String username, String password) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -61,7 +61,7 @@ public class Crawler {
     }
 
     private static String getStringBody(String username, String password) {
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         map.put("username", username);
         map.put("password", password);
 
