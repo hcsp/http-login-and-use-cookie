@@ -1,6 +1,6 @@
 package com.github.hcsp.http;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -13,6 +13,8 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Crawler {
     public static String loginAndGetResponse(String username, String password) throws IOException {
@@ -21,10 +23,10 @@ public class Crawler {
         HttpPost httpPost = new HttpPost("http://47.91.156.35:8000/auth/login");
         httpPost.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36");
         httpPost.setHeader("Content-Type", "application/json");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username", username);
-        jsonObject.put("password", password);
-        httpPost.setEntity(new StringEntity(jsonObject.toJSONString()));
+        Map<String,String> params = new HashMap<>();
+        params.put("username", username);
+        params.put("password", password);
+        httpPost.setEntity(new StringEntity(JSON.toJSONString(params)));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 
         try {
