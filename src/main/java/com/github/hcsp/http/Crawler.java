@@ -23,7 +23,7 @@ public class Crawler {
         HttpPost httpPost = new HttpPost("http://47.91.156.35:8000/auth/login");
         httpPost.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36");
         httpPost.setHeader("Content-Type", "application/json");
-        Map<String,String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put("username", username);
         params.put("password", password);
         httpPost.setEntity(new StringEntity(JSON.toJSONString(params)));
