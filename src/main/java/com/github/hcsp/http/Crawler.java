@@ -31,25 +31,27 @@ public class Crawler {
 
         try {
             HttpEntity entity = response.getEntity();
-            Header setCookieHeader = response.getFirstHeader("Set-Cookie");
-            cookie = setCookieHeader.getValue().split("; ")[0];
+            Header cookieHeader = response.getFirstHeader("Set-Cookie");
+            cookie = cookieHeader.getValue().split(";")[0];
             EntityUtils.consume(entity);
         } finally {
             response.close();
         }
 
-        return cookie;
+        return fetchRequestWithCookie(cookie);
     }
 
     public static String fetchRequestWithCookie(String cookie) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
-        httpGet.setHeader("Set-Cookie", cookie);
-        httpGet.setHeader("Content-Type", "application/json");
+        httpGet.setHeader("Cookie", cookie);
+        httpGet.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36");
         CloseableHttpResponse response = httpclient.execute(httpGet);
         try {
             HttpEntity entity = response.getEntity();
-            return EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            String responseBody = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            EntityUtils.consume(entity);
+            return responseBody;
         } finally {
             response.close();
         }
