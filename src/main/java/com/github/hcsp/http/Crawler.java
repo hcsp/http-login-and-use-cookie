@@ -27,8 +27,8 @@ public class Crawler {
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36");
         httpPost.addHeader("Content-Type", "application/json");
         Map<String, String> map = new HashMap<>();
-        map.put("username", username);
-        map.put("password", password);
+        map.put("username", "xdml");
+        map.put("password", "xdml");
         // 然后使用你喜欢的JSON序列化库把这个map序列化成一个JSON字符串
         String json = JSON.toJSONString(map);
         httpPost.setEntity(new StringEntity(json));
