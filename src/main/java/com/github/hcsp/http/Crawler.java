@@ -14,6 +14,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,19 +27,16 @@ public class Crawler {
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36");
         httpPost.addHeader("Content-Type", "application/json");
         Map<String, String> map = new HashMap<>();
-        map.put("username", "xdml");
-        map.put("password", "xdml");
-// 然后使用你喜欢的JSON序列化库把这个map序列化成一个JSON字符串
+        map.put("username", username);
+        map.put("password", password);
+        // 然后使用你喜欢的JSON序列化库把这个map序列化成一个JSON字符串
         String json = JSON.toJSONString(map);
         httpPost.setEntity(new StringEntity(json));
         CloseableHttpResponse response = httpclient.execute(httpPost);
         try {
             Header[] mycookie = response.getHeaders("set-cookie");
             HttpEntity entity = response.getEntity();
-            String s = mycookie[0].toString();
-            String[] split = s.split(";");
-            String[] cookieList = split[0].split(" ");
-            cookie = cookieList[1];
+            cookie = mycookie[0].getValue().substring(0, mycookie[0].getValue().indexOf("; Path=/; HttpOnly"));
             EntityUtils.consume(entity);
         } finally {
             response.close();
@@ -52,7 +50,7 @@ public class Crawler {
         try {
             HttpEntity httpEntity = getresponse.getEntity();
             InputStream content = httpEntity.getContent();
-            backjson = IOUtils.toString(content, "utf-8");
+            backjson = IOUtils.toString(content, StandardCharsets.UTF_8);
             EntityUtils.consume(httpEntity);
         }finally {
             getresponse.close();
