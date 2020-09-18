@@ -29,11 +29,11 @@ public class Crawler {
 
     public static String loginAndGetResponse(String username, String password) {
         // 获取JSESSIONID
-        String JSESSIONID = getJSESSIONID(
+        String jsessionid = getJSESSIONID(
                 HttpRequest.post(HTTP_LOGIN_URL).userAgent(USER_AGENT).contentType(CONTENT_TYPE)
                         .send(buildBody(username, password)).headers());
         // 获取body
-        HttpRequest bodyResponse = HttpRequest.get(HTTP_DATA_URL).userAgent(USER_AGENT).header(COOKIE, JSESSIONID);
+        HttpRequest bodyResponse = HttpRequest.get(HTTP_DATA_URL).userAgent(USER_AGENT).header(COOKIE, jsessionid);
         return bodyResponse.body();
     }
 
