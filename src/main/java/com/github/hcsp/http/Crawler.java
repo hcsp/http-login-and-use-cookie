@@ -18,19 +18,20 @@ public class Crawler {
 
     static final String WEB_SITE = "http://47.91.156.35:8000/auth";
     static final String ROUTER = "/login";
-    static HttpPost httpPost = new HttpPost(WEB_SITE + ROUTER);
-    static HttpGet httpGet = new HttpGet(WEB_SITE);
-    static CloseableHttpClient  httpClient = HttpClients.createDefault();
+    static CloseableHttpClient httpClient = HttpClients.createDefault();
 
     public static String loginAndGetResponse(String username, String password) throws IOException {
+
+        HttpGet httpGet = new HttpGet(WEB_SITE);
+
         Map<String,String> user_info = new HashMap<>();
 
-        user_info.put("username",username);
-        user_info.put("password",password);
+        user_info.put("username", username);
+        user_info.put("password", password);
 
         String cookie = getCookie(user_info);
 
-        httpGet.setHeader("Set-cookie",cookie);
+        httpGet.setHeader("Set-cookie", cookie);
 
         //获取结果集
         CloseableHttpResponse response = httpClient.execute(httpGet);
@@ -42,8 +43,10 @@ public class Crawler {
     }
 
     public static String getCookie(Map<String,String> user) throws IOException {
+        HttpPost httpPost = new HttpPost(WEB_SITE + ROUTER);
 
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36");
+
         httpPost.addHeader("Content-Type", "application/json");
         //格式化参数
         String params = JSON.toJSONString(user);
@@ -55,11 +58,12 @@ public class Crawler {
         Header[] headers = response.getHeaders("Set-cookie");
 
         String value = headers[0].toString();
-        String COOKIE = value.substring(value.indexOf("JSESSIONID"),value.indexOf(";"));
+
+        String cookie = value.substring(value.indexOf("JSESSIONID"), value.indexOf(";"));
 
         response.close();
 
-        return COOKIE;
+        return cookie;
     }
 
 }
