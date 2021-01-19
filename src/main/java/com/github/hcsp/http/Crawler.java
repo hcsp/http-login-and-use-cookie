@@ -1,6 +1,5 @@
 package com.github.hcsp.http;
 
-
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
