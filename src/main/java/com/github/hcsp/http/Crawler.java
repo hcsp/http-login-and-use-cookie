@@ -17,13 +17,13 @@ import java.util.Map;
 
 public class Crawler {
     public static String loginAndGetResponse(String username, String password) throws IOException {
-        //Post request
+        //POST请求
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost("http://47.91.35:8000/auth/login");
+        HttpPost httpPost = new HttpPost("http://47.91.156.35:8000/auth/login");
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36");
         httpPost.addHeader("Content-Type", "application/json");
 
-        //将map转化为json
+        //将map转为json
         Map<String, String> map = new HashMap<>();
         map.put("username", username);
         map.put("password", password);
@@ -44,11 +44,9 @@ public class Crawler {
         HttpEntity entity1 = response1.getEntity();
 
         return EntityUtils.toString(entity1);
-
     }
 
     public static void main(String[] args) throws IOException {
         String str = loginAndGetResponse("xdml", "xdml");
     }
-
 }
