@@ -44,7 +44,7 @@ public class Crawler {
         HttpEntity entity1 = response.getEntity();
         InputStream is = entity1.getContent();
         // 设置解析编码为UTF-8
-        String html = (IOUtils.toString(is, "UTF-8"));
+        String html = IOUtils.toString(is, "UTF-8");
         EntityUtils.consume(entity1);
         response.close();
 
