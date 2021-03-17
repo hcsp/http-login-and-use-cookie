@@ -17,10 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Crawler {
-    public static String loginAndGetResponse(String username, String password) throws IOException {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost("http://47.91.156.35:8000/auth/login");
+    private static final String COOKIE_URL = "http://47.91.156.35:8000/auth/login";
+    private static final String MESSAGE_URL = "http://47.91.156.35:8000/auth";
+    private static final CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    public static String loginAndGetResponse(String username, String password) throws IOException {
+
+        HttpPost httpPost = new HttpPost(COOKIE_URL);
         httpPost.addHeader("Content-Type", "application/json");
         httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36");
 
@@ -32,12 +36,14 @@ public class Crawler {
         httpPost.setEntity(entity);
         CloseableHttpResponse loginResponse = httpclient.execute(httpPost);
 
-        String cookie = loginResponse.getFirstHeader("Set-Cookie").getValue();
-        System.out.println(cookie);
+        String result = getMessageByCookie(loginResponse.getFirstHeader("Set-Cookie").getValue());
         loginResponse.close();
 
-        // 使用得到的Cookie，发送请求
-        HttpGet httpGet = new HttpGet("http://47.91.156.35:8000/auth");
+        return result;
+    }
+
+    public static String getMessageByCookie(String cookie) throws IOException {
+        HttpGet httpGet = new HttpGet(MESSAGE_URL);
         httpGet.addHeader("Cookie", cookie);
         CloseableHttpResponse response = httpclient.execute(httpGet);
 
@@ -47,7 +53,6 @@ public class Crawler {
         String html = IOUtils.toString(is, "UTF-8");
         EntityUtils.consume(entity1);
         response.close();
-
         return html;
     }
 }
